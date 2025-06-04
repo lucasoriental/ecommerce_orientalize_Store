@@ -3,6 +3,7 @@ import {
   getProductByIdModel,
   addProductModel,
   updateProductModel,
+  deleteProductModel,
 } from "../models/products.model.js";
 
 export async function getAllProductsService() {
@@ -35,11 +36,7 @@ export async function getProductByIdService(id) {
 
 export async function addProductService(productData) {
   try {
-    // Assuming you have a function to add a product in the model
     const newProduct = await addProductModel(productData);
-    /* if (!newProduct) {
-      throw new Error("Product already exists");
-    } */
     return newProduct;
   } catch (error) {
     console.error("addProductService\n");
@@ -48,18 +45,25 @@ export async function addProductService(productData) {
   }
 }
 
-export async function updateProductService(name, price, description, id) {
+export async function updateProductService(productData) {
   try {
-    const updatedProduct = await updateProductModel(
-      name,
-      price,
-      description,
-      id
-    );
+    const updatedProduct = await updateProductModel(productData);
     return updatedProduct;
   } catch (error) {
     console.error("updateProductService\n");
     console.error("Error updating Product:", error);
     throw new Error("Error updating Product");
+  }
+}
+
+export async function deleteProductService(productData) {
+  try {
+    const deleteProduct = await deleteProductModel(productData);
+    //console.log(deleteProduct);
+    return deleteProduct;
+  } catch (error) {
+    console.error("deleteProductService\n");
+    console.error("Error while Deleting Product attempt: ", error);
+    res.status(500).json({ message: "Error Deleting Product!" });
   }
 }

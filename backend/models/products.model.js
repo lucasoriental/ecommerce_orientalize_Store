@@ -38,15 +38,12 @@ export async function getProductByIdModel(id) {
 }
 
 export async function addProductModel(productData) {
-  const { product_name, product_price, product_description } = productData;
+  const { name, price, description } = productData;
   try {
     const result = await pool.query(
       "INSERT INTO products (name, price, description) VALUES ($1, $2, $3) RETURNING *",
-      [product_name, product_price, product_description]
+      [name, price, description]
     );
-    /* if (result.rows.length === 0) {
-      throw new Error("Product already exists");
-    } */
     return result.rows[0];
   } catch (error) {
     console.error("addProductModel\n");
@@ -55,11 +52,12 @@ export async function addProductModel(productData) {
   }
 }
 
-export async function updateProductModel(name, price, description, id) {
+export async function updateProductModel(productData) {
+  const { name, price, description, existingId } = productData;
   try {
     const result = await pool.query(
       `UPDATE products SET name = $1, price = $2, description = $3 WHERE id = $4 RETURNING *`,
-      [name, price, description, id]
+      [name, price, description, existingId]
     );
     /* if (result.rows.length === 0) {
       throw new Error("Product not found");
@@ -69,5 +67,20 @@ export async function updateProductModel(name, price, description, id) {
     console.error("updateProductModel\n");
     console.error("Error updating Product:", error);
     throw new Error("Error updating Product");
+  }
+}
+
+export async function deleteProductModel(productData) {
+  const { existingId } = productData;
+  try {
+    const result = await pool.query("DELETE FROM products WHERE id = $1 RETURNING *", [
+      existingId,
+    ]);
+    //console.log(result.rows[0]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("deleteProductModel\n");
+    console.error("Error while Deleting Product attempt: ", error);
+    res.status(500).json({ message: "Error Deleting Product!" });
   }
 }

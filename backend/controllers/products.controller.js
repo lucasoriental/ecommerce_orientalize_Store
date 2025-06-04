@@ -3,6 +3,7 @@ import {
   getProductByIdService,
   addProductService,
   updateProductService,
+  deleteProductService,
 } from "../services/products.service.js";
 
 export async function getAllProductsController(req, res) {
@@ -38,13 +39,9 @@ export async function getProductByIdController(req, res) {
 }
 
 export async function addProductController(req, res) {
+  const { name, price, description } = req.body;
   try {
-    const { product_name, product_price, product_description } = req.body;
-    const newProduct = await addProductService({
-      product_name,
-      product_price,
-      product_description,
-    });
+    const newProduct = await addProductService({ name, price, description });
     console.log("New Product Added:", newProduct);
     res.status(201).json({ message: "Product added successfully" });
     return newProduct;
@@ -56,14 +53,14 @@ export async function addProductController(req, res) {
 }
 
 export async function updateProductController(req, res) {
+  const { name, price, description } = req.body;
+  const { existingId } = req.params;
   try {
-    const { name, price, description } = req.body;
-    const { id } = req.params;
     const updatedProduct = await updateProductService({
       name,
       price,
       description,
-      id,
+      existingId,
     });
     res.status(200).json({ message: "Product updated successfully" });
     return updatedProduct;
@@ -71,5 +68,18 @@ export async function updateProductController(req, res) {
     console.error("updateProductController\n");
     console.error("Error updating Product:", error);
     res.status(500).json({ message: "Error updating Product" });
+  }
+}
+
+export async function deleteProductController(req, res) {
+  const { existingId } = req.params;
+  try {
+    const deleteProduct = await deleteProductService({ existingId });
+    console.log(deleteProduct);
+    return deleteProduct;
+  } catch (error) {
+    console.error("DeleteProductController\n");
+    console.error("Error while Deleting Product attempt: ", error);
+    res.status(500).json({ message: "Error Deleting Product!" });
   }
 }

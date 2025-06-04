@@ -4,7 +4,7 @@ import {
   getProductByIdController,
   addProductController,
   updateProductController,
-  /* deleteProductController, */
+  deleteProductController,
 } from "../controllers/products.controller.js";
 
 const router = Router();
@@ -13,7 +13,7 @@ const router = Router();
 router.get("/getAllProducts", getAllProductsController);
 router.get("/getProductById/:id", getProductByIdController);
 router.post("/addProduct", addProductController);
-router.put("/updateProduct/:id", updateProductController);
-//router.post("/deleteProduct", deleteProductController);
+router.put("/updateProduct/:existingId", updateProductController);
+router.delete("/deleteProduct/:existingId", deleteProductController);
 
 export default router;
